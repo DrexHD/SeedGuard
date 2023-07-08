@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "me.drex.seedguard.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ChunkGeneratorMixin",
+    "ChunkGeneratorStructureStateMixin",
+    "MinecraftServerMixin",
+    "StructurePlacementAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+	}
+}

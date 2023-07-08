@@ -1,0 +1,20 @@
+{
+	"schemaVersion": 1,
+	"id": "seedguard",
+	"version": "${version}",
+	"name": "SeedGuard",
+	"description": "Protects your world seeds by altering feature and structure placement, preventing seed cracking.",
+	"authors": [
+		"Drex"
+	],
+	"license": "MIT",
+	"icon": "assets/seedguard/icon.png",
+	"environment": "*",
+	"mixins": [
+		"seedguard.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.21",
+		"java": ">=17"
+	}
+}
