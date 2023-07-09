@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Random;
 
 public class SeedManager {
 
@@ -41,7 +41,7 @@ public class SeedManager {
         .setPrettyPrinting()
         .create();
 
-    private static final Random random = new Random();
+    private static final SecureRandom random = new SecureRandom();
     private static final Reference2IntMap<Holder<StructureSet>> structureSeeds = new Reference2IntOpenHashMap<>();
     private static final Reference2LongMap<Holder<ConfiguredFeature<?, ?>>> featureSeeds = new Reference2LongOpenHashMap<>();
 
