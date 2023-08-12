@@ -44,10 +44,11 @@ public class SeedManager {
     private static final SecureRandom random = new SecureRandom();
     private static final Reference2IntMap<Holder<StructureSet>> structureSeeds = new Reference2IntOpenHashMap<>();
     private static final Reference2LongMap<Holder<ConfiguredFeature<?, ?>>> featureSeeds = new Reference2LongOpenHashMap<>();
-
+    public static MinecraftServer MINECRAFT_SERVER = null;
     public static final Logger LOGGER = LoggerFactory.getLogger("SeedManager");
 
     public static void load(MinecraftServer server) {
+        MINECRAFT_SERVER = server;
         structureSeeds.putAll(load(server, STRUCTURE_SEEDS_FILE, STRUCTURE_SEEDS_MAP_CODEC));
         featureSeeds.putAll(load(server, FEATURE_SEEDS_FILE, FEATURE_SEEDS_MAP_CODEC));
 
