@@ -6,7 +6,8 @@
     "ChunkGeneratorMixin",
     "ChunkGeneratorStructureStateMixin",
     "MinecraftServerMixin",
-    "StructurePlacementAccessor"
+    "StructurePlacementAccessor",
+    "StructurePlacementMixin"
   ],
   "injectors": {
     "defaultRequire": 1
