@@ -2,7 +2,7 @@
 
 # SeedGuard
 
-Protects your world seeds by altering feature and structure placement, preventing seed cracking.
+Protects your world seed by altering feature and structure placement, preventing seed cracking.
 
 ## How does it work?
 
