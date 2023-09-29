@@ -13,6 +13,8 @@ import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.MinecraftServer;
@@ -91,6 +93,13 @@ public class SeedManager {
 
     private static <T, U> void save(MinecraftServer server, String filePath, Codec<Map<T, U>> codec, Map<T, U> data) {
         Path savePath = server.getWorldPath(LevelResource.ROOT).resolve(filePath);
+        LOGGER.warn("the savepath");
+        LOGGER.warn(savePath.toString());
+//        HolderLookup.RegistryLookup<StructureSet> holderLookup = server.registryAccess().lookupOrThrow(Registries.STRUCTURE_SET);
+//        holderLookup.listElements().forEach(structureSetReference -> LOGGER.error(structureSetReference.key().location().toString()));
+        LOGGER.warn(data.toString());
+        LOGGER.warn(codec.toString());
+
         DataResult<JsonElement> result = codec.encodeStart(RegistryOps.create(JsonOps.INSTANCE, server.registryAccess()), data);
         JsonElement jsonElement = result.resultOrPartial(LOGGER::error).orElseThrow();
         try (BufferedWriter writer = Files.newBufferedWriter(savePath, StandardCharsets.UTF_8)) {
