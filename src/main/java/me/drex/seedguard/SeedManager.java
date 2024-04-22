@@ -13,8 +13,6 @@ import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.MinecraftServer;
@@ -46,11 +44,11 @@ public class SeedManager {
     private static final SecureRandom random = new SecureRandom();
     private static final Reference2IntMap<Holder<StructureSet>> structureSeeds = new Reference2IntOpenHashMap<>();
     private static final Reference2LongMap<Holder<ConfiguredFeature<?, ?>>> featureSeeds = new Reference2LongOpenHashMap<>();
-    public static MinecraftServer MINECRAFT_SERVER = null;
     public static final Logger LOGGER = LoggerFactory.getLogger("SeedManager");
 
     public static void load(MinecraftServer server) {
-        MINECRAFT_SERVER = server;
+        structureSeeds.clear();
+        featureSeeds.clear();
         structureSeeds.putAll(load(server, STRUCTURE_SEEDS_FILE, STRUCTURE_SEEDS_MAP_CODEC));
         featureSeeds.putAll(load(server, FEATURE_SEEDS_FILE, FEATURE_SEEDS_MAP_CODEC));
 
@@ -98,7 +96,7 @@ public class SeedManager {
         try (BufferedWriter writer = Files.newBufferedWriter(savePath, StandardCharsets.UTF_8)) {
             GSON.toJson(jsonElement, writer);
         } catch (IOException e) {
-            LOGGER.error("Failed to save \"" + savePath + "\"", e);
+            LOGGER.error("Failed to save \"{}\"", savePath, e);
         }
     }
 
