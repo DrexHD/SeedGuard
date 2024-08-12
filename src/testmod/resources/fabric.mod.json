@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "seedguard-testmod",
+  "version": "${version}",
+  "name": "SeedGuard (Test Mod)",
+  "description": "Protects your world seeds by altering feature and structure placement, preventing seed cracking.",
+  "authors": [
+    "Drex"
+  ],
+  "entrypoints": {
+    "main": [
+      "me.drex.seedguard.testmod.SeedGuardTest"
+    ]
+  },
+  "license": "MIT",
+  "environment": "*",
+  "mixins": [
+    "seedguard.testmod.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.10"
+  }
+}

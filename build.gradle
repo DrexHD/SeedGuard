@@ -13,16 +13,29 @@ base {
 repositories {
 }
 
-loom {
-    splitEnvironmentSourceSets()
+sourceSets {
+    testmod {
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.compileClasspath
+    }
+}
 
-    mods {
-        "seedguard" {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
+loom {
+    runs {
+        testmodClient {
+            client()
+            ideConfigGenerated project.rootProject == project
+            name = "Test Mod Client"
+            source sourceSets.testmod
+        }
+        testmodServer {
+            server()
+            ideConfigGenerated project.rootProject == project
+            name = "Test Mod Server"
+            source sourceSets.testmod
         }
     }
-
+    createRemapConfigurations(sourceSets.testmod)
 }
 
 dependencies {
@@ -30,6 +43,9 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    modTestmodImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    testmodImplementation sourceSets.main.output
 }
 
 processResources {
