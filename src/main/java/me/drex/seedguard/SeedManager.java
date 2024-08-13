@@ -8,13 +8,11 @@ import com.google.gson.stream.JsonReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Reference2LongMap;
-import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
@@ -30,13 +28,17 @@ import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 public class SeedManager {
 
     private static final Codec<Map<Holder<StructureSet>, Integer>> STRUCTURE_SEEDS_MAP_CODEC = Codec.unboundedMap(StructureSet.CODEC, Codec.INT);
     private static final Codec<Map<Holder<ConfiguredFeature<?, ?>>, Long>> FEATURE_SEEDS_MAP_CODEC = Codec.unboundedMap(ConfiguredFeature.CODEC, Codec.LONG);
+    private static final Codec<Map<ResourceLocation, Long>> SURFACE_RULE_SEEDS_MAP_CODEC = Codec.unboundedMap(ResourceLocation.CODEC, Codec.LONG);
     private static final String STRUCTURE_SEEDS_FILE = "structure-seeds.json";
     private static final String FEATURE_SEEDS_FILE = "feature-seeds.json";
+    private static final String SURFACE_RULE_SEEDS_FILE = "surface-rule-seeds.json";
+    private static final String[] VANILLA_SURFACE_RULES = {"bedrock_roof", "bedrock_floor", "deepslate"};
     private static final Gson GSON = new GsonBuilder()
         .setPrettyPrinting()
         .create();
@@ -44,13 +46,16 @@ public class SeedManager {
     private static final SecureRandom random = new SecureRandom();
     private static final Reference2IntMap<Holder<StructureSet>> structureSeeds = new Reference2IntOpenHashMap<>();
     private static final Reference2LongMap<Holder<ConfiguredFeature<?, ?>>> featureSeeds = new Reference2LongOpenHashMap<>();
+    private static final Object2LongMap<ResourceLocation> surfaceRuleSeeds = new Object2LongOpenHashMap<>();
     public static final Logger LOGGER = LoggerFactory.getLogger("SeedManager");
 
     public static void load(MinecraftServer server) {
         structureSeeds.clear();
         featureSeeds.clear();
+        surfaceRuleSeeds.clear();
         structureSeeds.putAll(load(server, STRUCTURE_SEEDS_FILE, STRUCTURE_SEEDS_MAP_CODEC));
         featureSeeds.putAll(load(server, FEATURE_SEEDS_FILE, FEATURE_SEEDS_MAP_CODEC));
+        surfaceRuleSeeds.putAll(load(server, SURFACE_RULE_SEEDS_FILE, SURFACE_RULE_SEEDS_MAP_CODEC));
 
         server.registryAccess().lookupOrThrow(Registries.STRUCTURE_SET).listElements().forEach(holder -> {
             structureSeeds.computeIfAbsent(holder, ignored -> random.nextInt());
@@ -58,6 +63,9 @@ public class SeedManager {
         server.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE).listElements().forEach(holder -> {
             featureSeeds.computeIfAbsent(holder, ignored -> random.nextLong());
         });
+        for (String vanillaSurfaceRule : VANILLA_SURFACE_RULES) {
+            surfaceRuleSeeds.computeIfAbsent(ResourceLocation.parse(vanillaSurfaceRule), ignored -> random.nextLong());
+        }
         save(server);
     }
 
@@ -84,9 +92,17 @@ public class SeedManager {
         return featureSeeds.getLong(holder);
     }
 
+    public static Optional<Long> getSurfaceRuleSeed(ResourceLocation resourceLocation) {
+        if (surfaceRuleSeeds.containsKey(resourceLocation)) {
+            return Optional.of(surfaceRuleSeeds.getLong(resourceLocation));
+        }
+        return Optional.empty();
+    }
+
     public static void save(MinecraftServer server) {
         save(server, STRUCTURE_SEEDS_FILE, STRUCTURE_SEEDS_MAP_CODEC, structureSeeds);
         save(server, FEATURE_SEEDS_FILE, FEATURE_SEEDS_MAP_CODEC, featureSeeds);
+        save(server, SURFACE_RULE_SEEDS_FILE, SURFACE_RULE_SEEDS_MAP_CODEC, surfaceRuleSeeds);
     }
 
     private static <T, U> void save(MinecraftServer server, String filePath, Codec<Map<T, U>> codec, Map<T, U> data) {

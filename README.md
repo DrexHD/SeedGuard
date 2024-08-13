@@ -12,7 +12,8 @@ pillager outposts...).
 
 Each feature / structure has its own seed, which is hardcoded in vanilla (to ensure a world with
 the same seed always looks the same). SeedGuard replaces these seeds with randomly generated seeds, making it impossible
-to derive the world seed from [features](https://minecraft.wiki/w/Feature) or [structures](https://minecraft.wiki/w/Structure).
+to derive the world seed from [features](https://minecraft.wiki/w/Feature), [structures](https://minecraft.wiki/w/Structure)
+or [surface rules](https://minecraft.wiki/w/Surface_rule).
 
 ## Side-by-side view
 
