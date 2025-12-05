@@ -3,7 +3,7 @@ package me.drex.seedguard.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.drex.seedguard.SeedManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.PositionalRandomFactory;
 import net.minecraft.world.level.levelgen.RandomState;
@@ -23,13 +23,13 @@ public abstract class RandomStateMixin {
         method = "method_41561",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/level/levelgen/PositionalRandomFactory;fromHashOf(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/util/RandomSource;"
+            target = "Lnet/minecraft/world/level/levelgen/PositionalRandomFactory;fromHashOf(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/util/RandomSource;"
         )
     )
-    public RandomSource modifyResourceLocationDependentRandom(PositionalRandomFactory instance, ResourceLocation resourceLocation, Operation<RandomSource> original) {
-        return SeedManager.getSurfaceRuleSeed(resourceLocation)
+    public RandomSource modifyIdentifierDependentRandom(PositionalRandomFactory instance, Identifier identifier, Operation<RandomSource> original) {
+        return SeedManager.getSurfaceRuleSeed(identifier)
             .map(seed -> this.random.fromSeed(seed))
-            .orElseGet(() -> original.call(instance, resourceLocation));
+            .orElseGet(() -> original.call(instance, identifier));
     }
 
 }

@@ -11,8 +11,8 @@ import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
@@ -34,7 +34,7 @@ public class SeedManager {
 
     private static final Codec<Map<Holder<StructureSet>, Integer>> STRUCTURE_SEEDS_MAP_CODEC = Codec.unboundedMap(StructureSet.CODEC, Codec.INT);
     private static final Codec<Map<Holder<ConfiguredFeature<?, ?>>, Long>> FEATURE_SEEDS_MAP_CODEC = Codec.unboundedMap(ConfiguredFeature.CODEC, Codec.LONG);
-    private static final Codec<Map<ResourceLocation, Long>> SURFACE_RULE_SEEDS_MAP_CODEC = Codec.unboundedMap(ResourceLocation.CODEC, Codec.LONG);
+    private static final Codec<Map<Identifier, Long>> SURFACE_RULE_SEEDS_MAP_CODEC = Codec.unboundedMap(Identifier.CODEC, Codec.LONG);
     private static final String STRUCTURE_SEEDS_FILE = "structure-seeds.json";
     private static final String FEATURE_SEEDS_FILE = "feature-seeds.json";
     private static final String SURFACE_RULE_SEEDS_FILE = "surface-rule-seeds.json";
@@ -46,7 +46,7 @@ public class SeedManager {
     private static final SecureRandom random = new SecureRandom();
     private static final Reference2IntMap<Holder<StructureSet>> structureSeeds = new Reference2IntOpenHashMap<>();
     private static final Reference2LongMap<Holder<ConfiguredFeature<?, ?>>> featureSeeds = new Reference2LongOpenHashMap<>();
-    private static final Object2LongMap<ResourceLocation> surfaceRuleSeeds = new Object2LongOpenHashMap<>();
+    private static final Object2LongMap<Identifier> surfaceRuleSeeds = new Object2LongOpenHashMap<>();
     public static final Logger LOGGER = LoggerFactory.getLogger("SeedManager");
 
     public static void load(MinecraftServer server) {
@@ -64,7 +64,7 @@ public class SeedManager {
             featureSeeds.computeIfAbsent(holder, ignored -> random.nextLong());
         });
         for (String vanillaSurfaceRule : VANILLA_SURFACE_RULES) {
-            surfaceRuleSeeds.computeIfAbsent(ResourceLocation.parse(vanillaSurfaceRule), ignored -> random.nextLong());
+            surfaceRuleSeeds.computeIfAbsent(Identifier.parse(vanillaSurfaceRule), ignored -> random.nextLong());
         }
         save(server);
     }
@@ -92,9 +92,9 @@ public class SeedManager {
         return featureSeeds.getLong(holder);
     }
 
-    public static Optional<Long> getSurfaceRuleSeed(ResourceLocation resourceLocation) {
-        if (surfaceRuleSeeds.containsKey(resourceLocation)) {
-            return Optional.of(surfaceRuleSeeds.getLong(resourceLocation));
+    public static Optional<Long> getSurfaceRuleSeed(Identifier identifier) {
+        if (surfaceRuleSeeds.containsKey(identifier)) {
+            return Optional.of(surfaceRuleSeeds.getLong(identifier));
         }
         return Optional.empty();
     }
