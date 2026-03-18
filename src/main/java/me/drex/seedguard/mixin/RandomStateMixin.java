@@ -17,10 +17,10 @@ public abstract class RandomStateMixin {
 
     @Shadow
     @Final
-    PositionalRandomFactory random;
+    private PositionalRandomFactory random;
 
     @WrapOperation(
-        method = "method_41561",
+        method = "lambda$getOrCreateRandomFactory$0",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/world/level/levelgen/PositionalRandomFactory;fromHashOf(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/util/RandomSource;"
