@@ -6,7 +6,7 @@
     "ChunkGeneratorMixin",
     "ChunkGeneratorStructureStateMixin",
     "MinecraftServerMixin",
-    "StructurePlacementAccessor",
+    "AbstractSpreadingStructurePlacementAccessor",
     "StructurePlacementMixin",
     "RandomStateMixin"
   ],

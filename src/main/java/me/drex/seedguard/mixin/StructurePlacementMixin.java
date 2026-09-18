@@ -1,6 +1,7 @@
 package me.drex.seedguard.mixin;
 
 import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.structure.placement.AbstractSpreadingStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -8,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-@Mixin(StructurePlacement.class)
+@Mixin(AbstractSpreadingStructurePlacement.class)
 public abstract class StructurePlacementMixin {
 
     @Redirect(
