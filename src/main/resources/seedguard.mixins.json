@@ -7,7 +7,7 @@
     "ChunkGeneratorStructureStateMixin",
     "MinecraftServerMixin",
     "AbstractSpreadingStructurePlacementAccessor",
-    "StructurePlacementMixin",
+    "AbstractSpreadingStructurePlacementMixin",
     "RandomStateMixin"
   ],
   "injectors": {
