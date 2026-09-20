@@ -14,7 +14,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.storage.LevelResource;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ import java.util.Optional;
 public class SeedManager {
 
     private static final Codec<Map<Holder<StructureSet>, Integer>> STRUCTURE_SEEDS_MAP_CODEC = Codec.unboundedMap(StructureSet.CODEC, Codec.INT);
-    private static final Codec<Map<Holder<ConfiguredFeature<?, ?>>, Long>> FEATURE_SEEDS_MAP_CODEC = Codec.unboundedMap(ConfiguredFeature.CODEC, Codec.LONG);
+    private static final Codec<Map<Holder<Feature>, Long>> FEATURE_SEEDS_MAP_CODEC = Codec.unboundedMap(Feature.CODEC, Codec.LONG);
     private static final Codec<Map<Identifier, Long>> SURFACE_RULE_SEEDS_MAP_CODEC = Codec.unboundedMap(Identifier.CODEC, Codec.LONG);
     private static final String STRUCTURE_SEEDS_FILE = "structure-seeds.json";
     private static final String FEATURE_SEEDS_FILE = "feature-seeds.json";
@@ -45,7 +45,7 @@ public class SeedManager {
 
     private static final SecureRandom random = new SecureRandom();
     private static final Reference2IntMap<Holder<StructureSet>> structureSeeds = new Reference2IntOpenHashMap<>();
-    private static final Reference2LongMap<Holder<ConfiguredFeature<?, ?>>> featureSeeds = new Reference2LongOpenHashMap<>();
+    private static final Reference2LongMap<Holder<Feature>> featureSeeds = new Reference2LongOpenHashMap<>();
     private static final Object2LongMap<Identifier> surfaceRuleSeeds = new Object2LongOpenHashMap<>();
     public static final Logger LOGGER = LoggerFactory.getLogger("SeedManager");
 
@@ -60,7 +60,7 @@ public class SeedManager {
         server.registryAccess().lookupOrThrow(Registries.STRUCTURE_SET).listElements().forEach(holder -> {
             structureSeeds.computeIfAbsent(holder, ignored -> random.nextInt());
         });
-        server.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE).listElements().forEach(holder -> {
+        server.registryAccess().lookupOrThrow(Registries.FEATURE).listElements().forEach(holder -> {
             featureSeeds.computeIfAbsent(holder, ignored -> random.nextLong());
         });
         for (String vanillaSurfaceRule : VANILLA_SURFACE_RULES) {
@@ -88,7 +88,7 @@ public class SeedManager {
         return structureSeeds.getInt(holder);
     }
 
-    public static long getFeatureSeed(Holder<ConfiguredFeature<?, ?>> holder) {
+    public static long getFeatureSeed(Holder<Feature> holder) {
         return featureSeeds.getLong(holder);
     }
 

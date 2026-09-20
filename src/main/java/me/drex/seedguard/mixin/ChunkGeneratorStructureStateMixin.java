@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import me.drex.seedguard.SeedManager;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.RandomState;
@@ -25,14 +26,15 @@ public class ChunkGeneratorStructureStateMixin {
         method = "createForNormal",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/level/chunk/ChunkGeneratorStructureState;<init>(Lnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/biome/BiomeSource;JJLjava/util/List;)V"
+            target = "Lnet/minecraft/world/level/chunk/ChunkGeneratorStructureState;<init>(Lnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/biome/BiomeSource;JLnet/minecraft/world/level/ChunkPos;JLjava/util/List;)V"
         )
     )
-    private static void modifyFeatureSalts(RandomState randomState, long l, BiomeSource biomeSource, HolderLookup<StructureSet> holderLookup, CallbackInfoReturnable<ChunkGeneratorStructureState> cir, @Local List<Holder<StructureSet>> list) {
+    private static void modifyFeatureSalts(RandomState randomState, long levelSeed, ChunkPos origin, BiomeSource biomeSource, HolderLookup<StructureSet> allStructures, CallbackInfoReturnable<ChunkGeneratorStructureState> cir, @Local List<Holder<StructureSet>> list) {
         list.forEach(holder -> {
-            StructureSet structureSet = holder.value();
-            int salt = SeedManager.getStructureSeed(holder);
-            ((StructurePlacementAccessor) structureSet.placement()).setSalt(salt);
+            if (holder.value().placement() instanceof AbstractSpreadingStructurePlacementAccessor accessor) {
+                int salt = SeedManager.getStructureSeed(holder);
+                accessor.setSalt(salt);
+            }
         });
     }
 
